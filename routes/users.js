@@ -1,14 +1,16 @@
-var express = require('express');
-var mysql = require('mysql');
-var cors = require('cors')
-var app = express();
+const fs = require('fs');
+const express = require('express');
+const mysql = require('mysql');
+const cors = require('cors')
+const app = express();
 
  
 var corsOptions = {
   origin: 'http://localhost:3001',
-  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+  optionsSuccessStatus: 200
 }
 app.get('/users', cors(corsOptions), function (req, res, next) {
+  
   var conn = mysql.createConnection({
     database: 'deskeo_app',
     host: "localhost",
@@ -49,6 +51,7 @@ app.get('/users', cors(corsOptions), function (req, res, next) {
   res.json(allResult)
   }
 });
+
 app.listen('3002', function () {
   console.log('CORS-enabled web server listening on port 3002')
 })
