@@ -14,11 +14,15 @@
     "crypto-js": "^4.0.0",
     "debug": "~2.6.9",
     "express": "~4.16.1",
+    "file-api": "^0.10.4",
     "filereader": "^0.10.3",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
+    "memorystream": "^0.3.1",
     "mime": "^2.4.6",
+    "mime-types": "^2.1.27",
     "morgan": "~1.9.1",
-    "multer": "^1.4.2"
+    "multer": "^1.4.2",
+    "xmlhttprequest": "^1.8.0"
   }
 }
