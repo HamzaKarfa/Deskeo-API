@@ -27,14 +27,15 @@ var corsOptions = {
 
 app.post('/newUsers', cors(corsOptions), upload.single('image'), function (req, res) {
 
-
+console.log(req.file)
+console.log( req.body.name)
+    //------------DB Process --------//
+    var conn = sf.dbConnect()
+    conn.connect(function(err) {
+        if (err) throw err;
+        console.log("Connected!");
+    });
     if (req.file && req.body.name) {
-        //------------DB Process --------//
-        var conn = sf.dbConnect()
-        conn.connect(function(err) {
-            if (err) throw err;
-            console.log("Connected!");
-        });
         
         var sql = "INSERT INTO users (phrases_of_day, image) VALUES ?";
         var values = [
@@ -45,12 +46,6 @@ app.post('/newUsers', cors(corsOptions), upload.single('image'), function (req, 
         console.log("Number of records inserted: " + result.affectedRows);
         });
     } else if (req.body.name && req.file == undefined){
-        //------------DB Process --------//
-        var conn = sf.dbConnect()
-        conn.connect(function(err) {
-            if (err) throw err;
-            console.log("Connected!");
-        });
         
         var sql = "INSERT INTO users (phrases_of_day) VALUES ?";
         var values = [
@@ -60,14 +55,7 @@ app.post('/newUsers', cors(corsOptions), upload.single('image'), function (req, 
         if (err) throw err;
         console.log("Number of records inserted: " + result.affectedRows);
         });
-    } else if (req.body.name== undefined && req.file ){
-        //------------DB Process --------//
-        var conn = sf.dbConnect()
-        conn.connect(function(err) {
-            if (err) throw err;
-            console.log("Connected!");
-        });
-        
+    } else if (req.body.name == '' && req.file ){
         var sql = "INSERT INTO users (image) VALUES ?";
         var values = [
         [req.file.path]
