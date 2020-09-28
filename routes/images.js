@@ -10,7 +10,7 @@ var corsOptions = {
     origin: 'http://localhost:3001',
     optionsSuccessStatus: 200
 }
-app.get('/users', cors(corsOptions), function (req, res, next) {
+app.get('/images', cors(corsOptions), function (req, res, next) {
     var conn = sf.dbConnect()
     conn.connect(function(err) {
         if (err){ console.log(err)};
@@ -28,24 +28,21 @@ app.get('/users', cors(corsOptions), function (req, res, next) {
         )
     }
     async function encodeImage(results){
-        let file = new File(results.image)
+        let file = new File(results.images_path)
         let functionResult = await toBase64(file).then((data)=>{
-            results.image = data
+            results.images_path = data
         }).then(()=>{
             return results
         })
          return functionResult
     }
     async function loopResult(results){
-        if (results.image !== null) {
-            
+        if (results.images_path !== null) {
              let functionResult1 = await encodeImage(results)
              return functionResult1
-        }else {
-              return results
-         }
+        }
     }
-    var selectQuery = 'SELECT * FROM users';
+    var selectQuery = 'SELECT * FROM image_full_screen';
     conn.query(
         selectQuery,
         async function select(error, results, fields) {
@@ -54,8 +51,9 @@ app.get('/users', cors(corsOptions), function (req, res, next) {
             if (error) {
                 console.log(error);
             }
+            console.log(results)
+            
             for (let i = 0; i < results.length; i++) {
-
                 Array.push( await loopResult(results[i]))
             }
             // console.log('MOULAGA',Array)
@@ -65,8 +63,8 @@ app.get('/users', cors(corsOptions), function (req, res, next) {
     )})
 
     
-app.listen('3002', function () {
-    console.log('CORS-enabled web server listening on port 3002')
+app.listen('3005', function () {
+    console.log('CORS-enabled web server listening on port 3005')
 })
 
 module.exports = app;

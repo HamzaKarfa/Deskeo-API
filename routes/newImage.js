@@ -1,69 +1,51 @@
-const express = require('express');
-const cors = require('cors')
-const app = express();
+const crypto = require('crypto');
 const sf= require("./dbConnect")
-const FileAPI = require('file-api')
-const File = FileAPI.File;
-const FileList = FileAPI.FileList;
-const FileReader = FileAPI.FileReader;
-const fs = require('fs');
-var mime=require('mime-types');
+const express = require('express');
+const mysql = require('mysql');
+const cors = require('cors');
+const mime = require('mime');
+const app = express();
+const multer  = require('multer');
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './public/images')
+    },
+    filename: function (req, file, cb) {
+        crypto.pseudoRandomBytes(16, function (err, raw) {
+            cb(null, raw.toString('hex') + Date.now() + '.' + mime.getExtension(file.mimetype));
+        });
+    }
+});
+const upload = multer({ storage: storage });
 
+app.use(express.urlencoded());
 
 var corsOptions = {
     origin: 'http://localhost:3001',
     optionsSuccessStatus: 200
 }
-app.post('/newImage', cors(corsOptions), function (req, res, next) {
-    console.log(req.params.id)
+
+app.post('/newImage', cors(corsOptions), upload.any('image'), function (req, res) {
+
+// console.log(req.files[0])
+    //------------DB Process --------//
     var conn = sf.dbConnect()
     conn.connect(function(err) {
         if (err) throw err;
         console.log("Connected!");
     });
-    var selectQuery = 'SELECT * FROM users WHERE id ='+req.params.id;
+    Object.keys(req.files).map((key)=> {
+        console.log(req.files[key].path)
+        var sql = "INSERT INTO image_full_screen (images_path) VALUES ?";
+        var values = [
+        [req.files[key].path]
+        ];
+        conn.query(sql, [values], function (err, result) {
+        if (err) throw err;
+        console.log("Number of records inserted: " + result.affectedRows);
+        });
+    })
     
-    conn.query(
-        selectQuery,
-        function select(error, results, fields) {
-            if (error) {
-                console.log(error);
-                conn.end();
-                return;
-            }
-            console.log(results[0])
-            if (results[0].image !== null) {
-                let encodedImg
-                const toBase64 = file1 => new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.readAsDataURL(file1);
-                    reader.onload = () => resolve(reader.result);
-                    reader.onerror = error => reject(error);
-                });
-                
-                async function  Main()   {
-                   return new File(results[0].image);
-                }
-                Main()
-                .then((result) => {
-                     encodedImg = toBase64(result)
-                     return encodedImg
-                })
-                .then((data) => {
-                    res.json({ 'phrase' : results[0].phrases_of_day, 'img' : data.toString() })
-                })
-                .catch((err) => {
-                    
-                });
-            } else {
-                res.json({ 'phrase' : results[0].phrases_of_day, 'img' : '' })
-            }
-            conn.end();
-        }
-    )
-
-  
-
 });
 
 app.listen('3004', function () {
