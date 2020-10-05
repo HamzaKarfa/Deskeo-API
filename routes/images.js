@@ -7,7 +7,7 @@ const File = FileAPI.File;
 const FileReader = FileAPI.FileReader;
 
 var corsOptions = {
-    origin: 'http://localhost:3001',
+    origin: 'http://living-app.kaffein.agency:3001',
     optionsSuccessStatus: 200
 }
 app.get('/images', cors(corsOptions), function (req, res, next) {

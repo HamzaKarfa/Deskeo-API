@@ -21,7 +21,7 @@ const upload = multer({ storage: storage });
 app.use(express.urlencoded());
 
 var corsOptions = {
-    origin: 'http://localhost:3001',
+    origin: 'http://living-app.kaffein.agency:3001',
     optionsSuccessStatus: 200
 }
 
