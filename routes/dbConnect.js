@@ -9,7 +9,7 @@ function dbConnect() {
     return (
         mysql.createConnection({
             database: 'living_app',
-            host: " http://pma.onevalue.fr/",
+            host: "127.0.0.1",
             user: "living_app",
             password: "S6M7FCcWJeQjhNW"
         })
