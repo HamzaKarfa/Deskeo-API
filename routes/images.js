@@ -49,9 +49,7 @@ app.get('/images', cors(corsOptions), function (req, res, next) {
 
             if (error) {
                 console.log(error);
-            }
-            console.log(results)
-            
+            }            
             for (let i = 0; i < results.length; i++) {
                 Array.push( await loopResult(results[i]))
             }
