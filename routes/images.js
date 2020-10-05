@@ -14,7 +14,6 @@ app.get('/images', cors(corsOptions), function (req, res, next) {
     var conn = sf.dbConnect()
     conn.connect(function(err) {
         if (err){ console.log(err)};
-        console.log("Connected!");
     });
 
     function toBase64 (file1)  {
@@ -56,7 +55,6 @@ app.get('/images', cors(corsOptions), function (req, res, next) {
             for (let i = 0; i < results.length; i++) {
                 Array.push( await loopResult(results[i]))
             }
-            // console.log('MOULAGA',Array)
             res.json(Array)
             conn.end();
         }

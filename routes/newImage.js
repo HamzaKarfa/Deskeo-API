@@ -27,12 +27,10 @@ var corsOptions = {
 
 app.post('/newImage', cors(corsOptions), upload.any('image'), function (req, res) {
 
-// console.log(req.files[0])
     //------------DB Process --------//
     var conn = sf.dbConnect()
     conn.connect(function(err) {
         if (err) throw err;
-        console.log("Connected!");
     });
     Object.keys(req.files).map((key)=> {
         console.log(req.files[key].path)

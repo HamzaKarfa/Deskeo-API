@@ -27,13 +27,10 @@ var corsOptions = {
 
 app.post('/newUsers', cors(corsOptions), upload.single('image'), function (req, res) {
 
-console.log(req.file)
-console.log( req.body.name)
     //------------DB Process --------//
     var conn = sf.dbConnect()
     conn.connect(function(err) {
         if (err) throw err;
-        console.log("Connected!");
     });
     if (req.file && req.body.name) {
         
@@ -43,7 +40,6 @@ console.log( req.body.name)
         ];
         conn.query(sql, [values], function (err, result) {
         if (err) throw err;
-        console.log("Number of records inserted: " + result.affectedRows);
         });
     } else if (req.body.name && req.file == undefined){
         
@@ -53,7 +49,6 @@ console.log( req.body.name)
         ];
         conn.query(sql, [values], function (err, result) {
         if (err) throw err;
-        console.log("Number of records inserted: " + result.affectedRows);
         });
     } else if (req.body.name == '' && req.file ){
         var sql = "INSERT INTO users (image) VALUES ?";
@@ -62,10 +57,8 @@ console.log( req.body.name)
         ];
         conn.query(sql, [values], function (err, result) {
         if (err) throw err;
-        console.log("Number of records inserted: " + result.affectedRows);
         });
     }
-
     
 });
 
