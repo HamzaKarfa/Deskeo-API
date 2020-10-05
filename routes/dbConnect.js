@@ -8,10 +8,10 @@ module.exports =
 function dbConnect() {
     return (
         mysql.createConnection({
-            database: 'deskeo_app',
-            host: "localhost",
-            user: "root",
-            password: ""
+            database: 'living_app',
+            host: "http://pma.onevalue.fr",
+            user: "living_app",
+            password: "S6M7FCcWJeQjhNW"
         })
     )
 }
