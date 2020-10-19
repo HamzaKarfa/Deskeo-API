@@ -26,7 +26,7 @@ var corsOptions = {
 }
 
 app.post('/newUsers', cors(corsOptions), upload.single('image'), function (req, res) {
-
+    console.log(req.body)
     //------------DB Process --------//
     var conn = sf.dbConnect()
     conn.connect(function(err) {

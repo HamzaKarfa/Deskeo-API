@@ -9,6 +9,8 @@ var usersRouter = require('./routes/users');
 var newUserRouter = require('./routes/newUser');
 var newImage = require('./routes/newImage');
 var imagesRouter = require('./routes/images');
+var adminChoiceRouter = require('./routes/adminChoice');
+var getAdminChoiceRouter = require('./routes/getAdminChoice');
 
 var app = express();
 
@@ -27,6 +29,8 @@ app.use('/users', usersRouter);
 app.use('/newUsers', newUserRouter);
 app.use('/newImage', newImage);
 app.use('/images', imagesRouter);
+app.use('/adminChoice', adminChoiceRouter);
+app.use('/getAdminChoice', getAdminChoiceRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
