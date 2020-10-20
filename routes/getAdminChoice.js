@@ -26,7 +26,15 @@ app.get('/getAdminChoice', cors(corsOptions), function (req, res, next) {
             selectQuery,
             async function select(error, results, fields) {
                 let phraseDuJourId = JSON.stringify(results[0].phrase_du_jour)
-                let image_full_screen = JSON.stringify(results[0].image_full_screen)
+                // let image_full_screen = JSON.stringify(results[0].image_full_screen)
+
+                let image_full_screen
+                if (results[0].image_full_screen == '') {
+                    image_full_screen = []
+                } else {
+                    image_full_screen = results[0].image_full_screen.split(',');
+                }
+
                 let multiple_image_full_screen
                 if (results[0].multiple_image_full_screen == '') {
                     multiple_image_full_screen = []
@@ -77,48 +85,89 @@ app.get('/getAdminChoice', cors(corsOptions), function (req, res, next) {
                             } 
 
                             //--------------------image_full_screen-----------------//
-                                var selectQuery2 = "SELECT * FROM image_full_screen WHERE id="+ image_full_screen
-                                conn.query(
-                                    selectQuery2,
-                                    async function select(error, results, fields) {
+                            
+                            if (image_full_screen.length !==0) {
+                                let imageFullscreen=[]                         
+                                for (let j = 0; j <= image_full_screen.length; j++) {
+                                    var selectQuery2 = "SELECT * FROM image_full_screen WHERE id="+ image_full_screen[j]
+                                    conn.query(
+                                        selectQuery2,
+                                        async function select(error, results, fields) {
 
-                                        if (results.length !== 0) {
-                                            Array.push( {'imageFullscreen':await loopResult(results[0].images_path)})
-                                        } else{
-                                            Array.push( {'imageFullscreen':null})
-                                        }        
-
-                                        //--------------------multiple_image_full_screen-----------------//
-                                        if (multiple_image_full_screen.length !==0) {
-                                            let ArrayImage=[]                         
-                                            for (let i = 0; i < multiple_image_full_screen.length; i++) {
-                                                
-                                                var selectQuery3 = "SELECT * FROM image_full_screen WHERE id="+ multiple_image_full_screen[i]
-                                                conn.query(
-                                                    selectQuery3,
-                                                    async function select(error, results, fields) {   
+                                            if (results !== undefined && results.length !== 0) {
+                                                imageFullscreen.push( await loopResult(results[0].images_path))
+                                            }
+                                            if (imageFullscreen.length == image_full_screen.length) { 
+                                                Array.push({'imageFullscreen':imageFullscreen})                              
+                                            }
+                                            
+                                            //--------------------multiple_image_full_screen-----------------//
+                                            
+                                            if (j === image_full_screen.length-1) {
+                                                if (multiple_image_full_screen.length !==0  ) {
+                                                    let ArrayImage=[]                         
+                                                    for (let i = 0; i < multiple_image_full_screen.length; i++) {
                                                         
-                                                        if (results !== undefined && results.length !== 0) {
-                                                            ArrayImage.push( await loopResult(results[0].images_path))
-                                                        }
-                                                        if (ArrayImage.length === multiple_image_full_screen.length) { 
-                                                            Array.push({ArrayImage})                              
+                                                        var selectQuery3 = "SELECT * FROM image_full_screen WHERE id="+ multiple_image_full_screen[i]
+                                                        conn.query(
+                                                            selectQuery3,
+                                                            async function select(error, results, fields) {   
+                                                                
+                                                                if (results !== undefined && results.length !== 0) {
+                                                                    ArrayImage.push( await loopResult(results[0].images_path))
+                                                                }
+                                                                if (ArrayImage.length === multiple_image_full_screen.length) { 
+                                                                    Array.push({ArrayImage})                              
 
-                                                            res.json(Array)
-                                                            conn.end();
-                                                        } 
-                                                        
+                                                                    res.json(Array)
+                                                                    conn.end();
+                                                                } 
+                                                                
+                                                            }
+                                                            )
                                                     }
-                                                    )
-                                                }
-                                        } else {
-                                            Array.push(null) 
-                                            res.json(Array)
-                                            conn.end();
-                                        }
+                                                } else {
+                                                    Array.push(null) 
 
+                                                    res.json(Array)
+                                                    conn.end();
+                                                } 
+                                            }
+
+                                        }
+                                    )
+                                }
+                            }else{
+                                
+                                Array.push(null)
+                                if (multiple_image_full_screen.length !==0  ) {
+                                    let ArrayImage=[]                         
+                                    for (let i = 0; i < multiple_image_full_screen.length; i++) {
+                                        
+                                        var selectQuery3 = "SELECT * FROM image_full_screen WHERE id="+ multiple_image_full_screen[i]
+                                        conn.query(
+                                            selectQuery3,
+                                            async function select(error, results, fields) {   
+                                                
+                                                if (results !== undefined && results.length !== 0) {
+                                                    ArrayImage.push( await loopResult(results[0].images_path))
+                                                }
+                                                if (ArrayImage.length === multiple_image_full_screen.length) { 
+                                                    Array.push({ArrayImage})                              
+
+                                                    res.json(Array)
+                                                    conn.end();
+                                                } 
+                                                
+                                            }
+                                            )
                                     }
-                                )
+                                } else {
+                                    Array.push(null) 
+                                    res.json(Array)
+                                    conn.end();
+                                } 
+                            }
                         }
                     )
             }
